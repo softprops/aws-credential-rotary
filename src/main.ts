@@ -51,7 +51,7 @@ async function run() {
       githubSecretAccessKeyName,
       encryptedSecretAccessKey
     );
-      await aws.deleteAccessKey(iamUserName, currentKeys[0])
+    await aws.deleteAccessKey(iamUserName, currentKeys[0]);
   } catch (error) {
     setFailed(error.message);
   }
