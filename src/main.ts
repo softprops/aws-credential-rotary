@@ -1,7 +1,6 @@
-import { setFailed, getInput } from "@actions/core";
-import { Octokit } from "@octokit/rest";
+import { setFailed } from "@actions/core";
 import AWS from "aws-sdk";
-import * as soduim from "tweetsodium";
+import { seal } from "tweetsodium";
 import { DefaultAws } from "./aws";
 import { OctokitGitHub } from "./github";
 import { input } from "./input";
@@ -31,13 +30,10 @@ async function run() {
     );
     const publicKey = await github.publicKey(owner, repo);
     const encryptedAccessKeyId = Buffer.from(
-      soduim.seal(Buffer.from(AccessKeyId), Buffer.from(publicKey, "base64"))
+      seal(Buffer.from(AccessKeyId), Buffer.from(publicKey, "base64"))
     ).toString("base64");
     const encryptedSecretAccessKey = Buffer.from(
-      soduim.seal(
-        Buffer.from(SecretAccessKey),
-        Buffer.from(publicKey, "base64")
-      )
+      seal(Buffer.from(SecretAccessKey), Buffer.from(publicKey, "base64"))
     ).toString("base64");
     await github.upsertSecret(
       owner,
