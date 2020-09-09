@@ -1,0 +1,53 @@
+{
+  "name": "aws-credential-rotary",
+  "version": "0.1.0",
+  "private": true,
+  "description": "GitHub Action for rotating aws credential secrets",
+  "main": "lib/main.js",
+  "scripts": {
+    "build": "npx ncc build src/main.ts --minify",
+    "buildcheck": "npx tsc --noEmit -p .",
+    "test": "npx jest --coverage",
+    "fmt": "npx prettier --write 'src/**/*.ts' '__tests__/**/*.ts'",
+    "fmtcheck": "npx prettier --check 'src/**/*.ts' '__tests__/**/*.ts'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/softprops/aws-credential-rotary.git"
+  },
+  "keywords": [
+    "actions"
+  ],
+  "author": "softprops",
+  "license": "MIT",
+  "dependencies": {
+    "@actions/core": "^1.2.4",
+    "@actions/github": "^4.0.0",
+    "@octokit/rest": "^18.0.5",
+    "aws-sdk": "^2.747.0",
+    "tweetsodium": "0.0.5"
+  },
+  "devDependencies": {
+    "@types/jest": "^25.2.3",
+    "@types/node": "^14.0.27",
+    "@zeit/ncc": "^0.22.3",
+    "aws-sdk-mock": "^5.1.0",
+    "husky": "^4.2.5",
+    "jest": "^26.3.0",
+    "jest-circus": "^26.3.0",
+    "lint-staged": "^10.2.11",
+    "prettier": "2.0.5",
+    "ts-jest": "^26.1.4",
+    "typescript": "^3.9.7"
+  },
+  "lint-staged": {
+    "{__tests__,src}/**/*.ts": [
+      "npm run fmt"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  }
+}

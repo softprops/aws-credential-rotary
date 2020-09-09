@@ -1,0 +1,13 @@
+# https://help.github.com/en/articles/metadata-syntax-for-github-actions
+name: 'AWS Credential Rotary'
+description: 'Rotate AWS Credentials stored in GitHub secrets'
+author: 'softprops'
+env:
+  'GITHUB_TOKEN': 'GitHub API token'
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
+
+branding:
+  color: 'green'
+  icon: 'rotate-cw'
