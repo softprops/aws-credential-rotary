@@ -1,8 +1,7 @@
 import { setFailed } from "@actions/core";
 import AWS from "aws-sdk";
-import { seal } from "tweetsodium";
-import { DefaultAws } from "./aws";
-import { OctokitGitHub } from "./github";
+import { AwsCredentials } from "./credentials";
+import { GitHubSecrets, encrypt } from "./secrets";
 import { input } from "./input";
 
 async function run() {
@@ -16,38 +15,26 @@ async function run() {
       iamUserName,
     } = input(process.env);
 
-    const github = new OctokitGitHub(githubToken);
-    const aws = new DefaultAws(new AWS.IAM());
+    const secrets = new GitHubSecrets(githubToken, owner, repo);
+    const credentials = new AwsCredentials(new AWS.IAM(), iamUserName);
 
-    const currentKeys = await aws.accessKeys(iamUserName);
+    const currentKeys = await credentials.list();
     if (currentKeys.length == 2) {
       setFailed(`AWS user ${iamUserName} already has 2 access keys`);
       return;
     }
 
-    const { AccessKeyId, SecretAccessKey } = await aws.createAccessKey(
-      iamUserName
-    );
-    const publicKey = await github.publicKey(owner, repo);
-    const encryptedAccessKeyId = Buffer.from(
-      seal(Buffer.from(AccessKeyId), Buffer.from(publicKey, "base64"))
-    ).toString("base64");
-    const encryptedSecretAccessKey = Buffer.from(
-      seal(Buffer.from(SecretAccessKey), Buffer.from(publicKey, "base64"))
-    ).toString("base64");
-    await github.upsertSecret(
-      owner,
-      repo,
+    const { AccessKeyId, SecretAccessKey } = await credentials.create();
+    const publicKey = await secrets.publicKey();
+    await secrets.upsert(
       githubAccessKeyIdName,
-      encryptedAccessKeyId
+      encrypt(AccessKeyId, publicKey)
     );
-    await github.upsertSecret(
-      owner,
-      repo,
+    await secrets.upsert(
       githubSecretAccessKeyName,
-      encryptedSecretAccessKey
+      encrypt(SecretAccessKey, publicKey)
     );
-    await aws.deleteAccessKey(iamUserName, currentKeys[0]);
+    await credentials.delete(currentKeys[0]);
   } catch (error) {
     setFailed(error.message);
   }
