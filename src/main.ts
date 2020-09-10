@@ -18,8 +18,8 @@ async function run() {
     const secrets = new GitHubSecrets(githubToken, owner, repo);
     const credentials = new AwsCredentials(new AWS.IAM(), iamUserName);
 
-    const currentKeys = await credentials.list();
-    if (currentKeys.length == 2) {
+    const keys = await credentials.list();
+    if (keys.length == 2) {
       setFailed(`AWS user ${iamUserName} already has 2 access keys`);
       return;
     }
@@ -34,7 +34,7 @@ async function run() {
       githubSecretAccessKeyName,
       encrypt(SecretAccessKey, publicKey)
     );
-    await credentials.delete(currentKeys[0]);
+    await credentials.delete(keys[0]);
   } catch (error) {
     setFailed(error.message);
   }
