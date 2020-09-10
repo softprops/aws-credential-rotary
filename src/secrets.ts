@@ -1,9 +1,13 @@
 import { Octokit } from "@octokit/rest";
 import { seal } from "tweetsodium";
 
+export interface PublicKey {
+  key: string;
+  key_id: string;
+}
 export interface Secrets {
-  publicKey: () => Promise<string>;
-  upsert: (name: string, value: string) => Promise<void>;
+  publicKey: () => Promise<PublicKey>;
+  upsert: (name: string, value: string, key_id: string) => Promise<void>;
 }
 
 export const encrypt = (plaintext: string, publicKey: string): string =>
@@ -23,7 +27,7 @@ export class GitHubSecrets implements Secrets {
   }
 
   publicKey = async () => {
-    const { key } = (
+    return (
       await this.octokit.request(
         "GET /repos/{owner}/{repo}/actions/secrets/public-key",
         {
@@ -32,10 +36,13 @@ export class GitHubSecrets implements Secrets {
         }
       )
     ).data;
-    return key;
   };
 
-  upsert = async (secret_name: string, encrypted_value: string) => {
+  upsert = async (
+    secret_name: string,
+    encrypted_value: string,
+    key_id: string
+  ) => {
     await this.octokit.request(
       "PUT /repos/{owner}/{repo}/actions/secrets/{secret_name}",
       {
@@ -43,6 +50,7 @@ export class GitHubSecrets implements Secrets {
         repo: this.repo,
         secret_name,
         encrypted_value,
+        key_id,
       }
     );
   };
