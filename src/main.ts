@@ -24,16 +24,21 @@ async function run() {
       return;
     }
 
+    console.log("provisoning new access key");
     const { AccessKeyId, SecretAccessKey } = await credentials.create();
+    console.log("fetching public key");
     const publicKey = await secrets.publicKey();
+    console.log(`upserting secret ${githubAccessKeyIdName}`);
     await secrets.upsert(
       githubAccessKeyIdName,
       encrypt(AccessKeyId, publicKey)
     );
+    console.log(`upserting secret ${githubSecretAccessKeyName}`);
     await secrets.upsert(
       githubSecretAccessKeyName,
       encrypt(SecretAccessKey, publicKey)
     );
+    console.log("deleting previous access key");
     await credentials.delete(keys[0]);
   } catch (error) {
     setFailed(error.message);

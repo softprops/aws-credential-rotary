@@ -6,7 +6,7 @@ export interface Secrets {
   upsert: (name: string, value: string) => Promise<void>;
 }
 
-export const encrypt = (plaintext: string, publicKey: string) =>
+export const encrypt = (plaintext: string, publicKey: string): string =>
   Buffer.from(
     seal(Buffer.from(plaintext), Buffer.from(publicKey, "base64"))
   ).toString("base64");
