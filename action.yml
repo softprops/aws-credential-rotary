@@ -11,6 +11,12 @@ inputs:
   iam-user-name:
     description: 'AWS IAM username associated with credentials to be rotated'
     required: true
+  github-access-key-id-name:
+    description: 'GitHub secret name used to store AWS access key id. Defaults to AWS_ACCESS_KEY_ID'
+    required: false
+  github-secret-access-key-name:
+    description: 'GitHub secret name used to store AWS access key secret. Defaults to AWS_SECRET_ACCESS_KEY'
+    required: false
 branding:
   color: 'green'
   icon: 'rotate-cw'

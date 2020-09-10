@@ -1,4 +1,4 @@
-import { setFailed } from "@actions/core";
+import { setFailed, info } from "@actions/core";
 import AWS from "aws-sdk";
 import { AwsCredentials } from "./credentials";
 import { GitHubSecrets, encrypt } from "./secrets";
@@ -24,23 +24,23 @@ async function run() {
       return;
     }
 
-    console.log("provisoning new access key");
+    info("Provisoning new access key");
     const { AccessKeyId, SecretAccessKey } = await credentials.create();
-    console.log("fetching public key");
+    console.log("Fetching repository public key");
     const { key, key_id } = await secrets.publicKey();
-    console.log(`upserting secret ${githubAccessKeyIdName}`);
+    info(`Upserting secret ${githubAccessKeyIdName}`);
     await secrets.upsert(
       githubAccessKeyIdName,
       encrypt(AccessKeyId, key),
       key_id
     );
-    console.log(`upserting secret ${githubSecretAccessKeyName}`);
+    info(`Upserting secret ${githubSecretAccessKeyName}`);
     await secrets.upsert(
       githubSecretAccessKeyName,
       encrypt(SecretAccessKey, key),
       key_id
     );
-    console.log("deleting previous access key");
+    info("Deleting previous access key");
     await credentials.delete(keys[0]);
   } catch (error) {
     setFailed(error.message);
