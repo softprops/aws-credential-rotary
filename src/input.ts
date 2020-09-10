@@ -27,16 +27,11 @@ const requireInput = (
 export const input = (env: Record<string, string | undefined>): Input => {
   const githubToken = env.GITHUB_TOKEN || "";
   const [owner, repo] = (env.GITHUB_REPOSITORY || "").split("/");
-  const githubAccessKeyIdName = requireInput(
-    env,
-    "INPUT_GITHUB-ACCESS-KEY-ID-NAME",
-    "github-access-key-id-name"
-  );
-  const githubSecretAccessKeyName = requireInput(
-    env,
-    "INPUT_GITHUB-SECRET-ACCESS-KEY-NAME",
-    "github-secret-access-key-name"
-  );
+  const githubAccessKeyIdName =
+    env["INPUT_GITHUB-ACCESS-KEY-ID-NAME"] || "AWS_ACCESS_KEY_ID";
+
+  const githubSecretAccessKeyName =
+    env["INPUT_GITHUB-SECRET-ACCESS-KEY-NAME"] || "AWS_SECRET_ACCESS_KEY";
   const iamUserName = requireInput(env, "INPUT_IAM-USER-NAME", "iam-user-name");
 
   return {
