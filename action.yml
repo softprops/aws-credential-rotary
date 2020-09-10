@@ -7,7 +7,10 @@ env:
 runs:
   using: 'node12'
   main: 'dist/index.js'
-
+inputs:
+  iam-user-name:
+    description: 'AWS IAM username associated with credentials to be rotated'
+    required: true
 branding:
   color: 'green'
   icon: 'rotate-cw'
