@@ -21,7 +21,7 @@
 AWS assumes a shared security responsibility model with you and it's services.
 
 It goes to great lengths to secure your privacy and access to services which your users depend on.
-It also assumes that you are doing the same with the credentials that permit access to thoae services and data.
+It also assumes that you are doing the same with the credentials that permit access to those services and data.
 AWS [documents some helpful best practices](https://docs.aws.amazon.com/general/latest/gr/aws-access-keys-best-practices.html) to manage that.
 
 One of those practices is ensuring you are periodically rotating your credentials. The longer lived your credentials are, the greater the opportunity of inviting unwanted and unintential breach of your aws managed systems and data is.
