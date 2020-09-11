@@ -10,7 +10,7 @@ export interface Input {
   /** Name of GitHub secret storing aws_secret_access_key */
   githubSecretAccessKeyName: string;
   /** AWS IAM user name */
-  iamUserName: string;
+  iamUserName: string | undefined;
 }
 
 const requireInput = (
@@ -32,7 +32,7 @@ export const input = (env: Record<string, string | undefined>): Input => {
 
   const githubSecretAccessKeyName =
     env["INPUT_GITHUB-SECRET-ACCESS-KEY-NAME"] || "AWS_SECRET_ACCESS_KEY";
-  const iamUserName = requireInput(env, "INPUT_IAM-USER-NAME", "iam-user-name");
+  const iamUserName = env["INPUT_IAM-USER-NAME"];
 
   return {
     githubToken,

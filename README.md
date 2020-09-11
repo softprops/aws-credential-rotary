@@ -36,7 +36,7 @@ Create a personal access token with `repo` permissions on [github.com](https://d
 
 Store that access token in your [GitHub repository secrets](https://docs.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets), then provide that as `GITHUB_TOKEN` environment variable to the GitHub action step for aws-credential-rotary.
 
-This action also depends on having the ability to list, create, and delete iam access keys. You will need to provide at a minimum an `iam-user-name` to for the action to fetch the members access keys.
+This action also  on having the ability to list, create, and delete iam access keys. You will need to provide at a minimum an `iam-user-name` to for the action to fetch the members access keys. By default, this action assumes the credentials used to rotate are the same as the iam user for other GitHub action scontinuous integration and deployment operations.
 
 The example below rotates credentials just before they are used
 
@@ -51,9 +51,6 @@ jobs:
     steps:
 +     - name: Rotate credentials
 +       uses: softprops/aws-credential-rotary@master
-+       with:
-+           iam-user-name: 'name-of-iam-user-associated-with-credentials'
-+       env:
 +         GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
 +         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
 +         AWS_SECRET_ACCESS_TOKEN: ${{ secrets.AWS_SECRET_ACCESS_TOKEN }}
@@ -84,6 +81,34 @@ jobs:
        uses: softprops/aws-credential-rotary@master
        with:
            iam-user-name: name-of-iam-user-associated-with-credentials'
+       env:
+         GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
+         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+         AWS_SECRET_ACCESS_TOKEN: ${{ secrets.AWS_SECRET_ACCESS_TOKEN }}
+      - name: Print Create Date
+        run: aws iam list-access-keys --user name-of-iam-user-associated-with-credentials --query 'AccessKeyMetadata[0].CreateDate' --output text
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+```
+
+### Specifying IAM username
+
+When the IAM associated with for the credentials to be rotated is not the same as the IAM user used to rotate credentials you can specify an `iam-user-name` for disambiguating the two.
+
+```diff
+name: Main
+
+on: push
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+     - name: Rotate credentials
+       uses: softprops/aws-credential-rotary@master
++       with:
++           iam-user-name: 'name-of-iam-user-associated-with-credentials'
        env:
          GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -130,7 +155,7 @@ jobs:
 
 | Name        | Type    | Description                                                     |
 |-------------|---------|-----------------------------------------------------------------|
-| `iam-user-name`   | string  | AWS IAM username associated with credentials to be rotated                         |
+| `iam-user-name`   | string  | AWS IAM username associated with credentials to be rotated. Defaults to sts get-caller-identity infered user name                    |
 | `github-access-key-id-name`      | string  | GitHub secret name used to store AWS access key id. Defaults to AWS_ACCESS_KEY_ID                |
 | `github-secret-access-key-name`      | string  | GitHub secret name used to store AWS access key secret. Defaults to AWS_SECRET_ACCESS_KEY                |
 

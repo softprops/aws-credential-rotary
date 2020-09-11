@@ -16,7 +16,14 @@ async function run() {
     } = input(process.env);
 
     const secrets = new GitHubSecrets(githubToken, owner, repo);
-    const credentials = new AwsCredentials(new AWS.IAM(), iamUserName);
+    const credentials = new AwsCredentials(
+      new AWS.IAM(),
+      iamUserName ||
+        (await new AWS.STS().getCallerIdentity().promise()).Arn?.split(
+          "/"
+        )[1] ||
+        ""
+    );
 
     const keys = await credentials.list();
     if (keys.length == 2) {
