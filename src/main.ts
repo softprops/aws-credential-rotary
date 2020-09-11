@@ -4,10 +4,16 @@ import { AwsCredentials, Credentials } from "./credentials";
 import { GitHubSecrets, Secrets, encrypt } from "./secrets";
 import { Input, input } from "./input";
 
-async function rotate(
+export interface Logger {
+  setFailed: (msg: any) => void;
+  info: (msg: any) => void;
+}
+
+export async function rotate(
   input: Input,
   secrets: Secrets,
-  credentials: Credentials
+  credentials: Credentials,
+  logger: Logger
 ) {
   const {
     iamUserName,
@@ -16,27 +22,27 @@ async function rotate(
   } = input;
   const keys = await credentials.list();
   if (keys.length == 2) {
-    setFailed(`AWS user ${iamUserName} already has 2 access keys`);
+    logger.setFailed(`AWS user ${iamUserName} already has 2 access keys`);
     return;
   }
 
-  info("Provisoning new access key");
+  logger.info("Provisoning new access key");
   const { AccessKeyId, SecretAccessKey } = await credentials.create();
   console.log("Fetching repository public key");
   const { key, key_id } = await secrets.publicKey();
-  info(`Upserting secret ${githubAccessKeyIdName}`);
+  logger.info(`Upserting secret ${githubAccessKeyIdName}`);
   await secrets.upsert(
     githubAccessKeyIdName,
     encrypt(AccessKeyId, key),
     key_id
   );
-  info(`Upserting secret ${githubSecretAccessKeyName}`);
+  logger.info(`Upserting secret ${githubSecretAccessKeyName}`);
   await secrets.upsert(
     githubSecretAccessKeyName,
     encrypt(SecretAccessKey, key),
     key_id
   );
-  info("Deleting previous access key");
+  logger.info("Deleting previous access key");
   await credentials.delete(keys[0]);
 }
 
@@ -45,15 +51,17 @@ async function main() {
     const actionInput = input(process.env);
     const { githubToken, owner, repo, iamUserName } = actionInput;
     const secrets = new GitHubSecrets(githubToken, owner, repo);
-    const credentials = new AwsCredentials(
-      new AWS.IAM(),
+    const username =
       iamUserName ||
-        (await new AWS.STS().getCallerIdentity().promise()).Arn?.split(
-          "/"
-        )[1] ||
-        ""
+      (await new AWS.STS().getCallerIdentity().promise()).Arn?.split("/")[1] ||
+      "";
+    const credentials = new AwsCredentials(new AWS.IAM(), username);
+    await rotate(
+      { iamUserName: username, ...actionInput },
+      secrets,
+      credentials,
+      { setFailed, info }
     );
-    await rotate(actionInput, secrets, credentials);
   } catch (error) {
     setFailed(error.message);
   }
