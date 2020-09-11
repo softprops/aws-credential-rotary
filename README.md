@@ -5,7 +5,7 @@
 </h1>
 
 <p align="center">
-   A GitHub action for rotate AWS credentials stored in GitHub secrets
+   A GitHub action for rotating AWS credentials stored in GitHub secrets
 </p>
 
 <div align="center">
@@ -30,11 +30,13 @@ In short, it is much easier to rotate your credentials than to cope with the aft
 
 ## 🤸 usage
 
-This action depends on the ability to update repository secrets. As such it requires an GitHub api token with `repo` permissions. Create a personal access token with `repo` permissions,  store that in GitHub secrets, and provide that as `GITHUB_TOKEN` environment variable.
+This action depends on the ability to update repository secrets. As such it requires an GitHub api token with `repo` permissions.
 
-This action also depends on having the ability to list, create, and delete iam access keys.
+Create a personal access token with `repo` permissions on [github.com](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token) or if you prefer the command line, [try octopat](https://github.com/softprops/octopat)
 
-You will need to provide at a minimum an `iam-user-name` to for the action to fetch the members access keys.
+Store that access token in your [GitHub repository secrets](https://docs.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets), then provide that as `GITHUB_TOKEN` environment variable to the GitHub action step for aws-credential-rotary.
+
+This action also depends on having the ability to list, create, and delete iam access keys. You will need to provide at a minimum an `iam-user-name` to for the action to fetch the members access keys.
 
 The example below rotates credentials just before they are used
 
