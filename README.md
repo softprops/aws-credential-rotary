@@ -2,6 +2,18 @@
 
 > Rotate AWS credentials stored in GitHub secrets
 
+## why bother
+
+AWS assumes a shared security responsibility model with you and it's services.
+
+It goes to great lengths to secure your privacy and access to services which your users depend on.
+It also assumes that you are doing the same with the credentials that permit access to thoae services and data.
+AWS [documents some helpful best practices](https://docs.aws.amazon.com/general/latest/gr/aws-access-keys-best-practices.html) to manage that.
+
+One of those practices is ensuring you are periodically rotating your credentials. The longer lived your credentials are, the greater the opportunity of inviting unwanted and unintential breach of your aws managed systems and data is.
+
+In short, it is much easier to rotate your credentials than to cope with the aftermath of a data access breach. 
+
 ## usage
 
 This action depends on the ability to update repository secrets. As such it requires an GitHub api token with `repo` permissions. Create a personal access token with `repo` permissions,  store that in GitHub secrets, and provide that as `GITHUB_TOKEN` environment variable.
