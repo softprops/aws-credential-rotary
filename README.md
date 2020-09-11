@@ -51,6 +51,7 @@ jobs:
     steps:
 +     - name: Rotate credentials
 +       uses: softprops/aws-credential-rotary@master
++       env:
 +         GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
 +         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
 +         AWS_SECRET_ACCESS_TOKEN: ${{ secrets.AWS_SECRET_ACCESS_TOKEN }}
