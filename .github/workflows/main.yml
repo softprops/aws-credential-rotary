@@ -32,8 +32,6 @@ jobs:
         uses: actions/checkout@v2
       - name: Rotate Credentials
         uses: ./ # Uses an action in the root directory
-        with:
-          iam-user-name: 'doug-clone'
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
