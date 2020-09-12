@@ -36,10 +36,8 @@ Create a personal access token with `repo` permissions on [github.com](https://d
 
 Store that access token in your [GitHub repository secrets](https://docs.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets), then provide that as `GITHUB_TOKEN` environment variable to the GitHub action step for aws-credential-rotary.
 
-<<<<<<< HEAD
-This action also depends on having the ability to list, create, and delete iam access keys. You will need to provide at a minimum an `iam-user-name` to for the action to fetch the members access keys. By default, this action assumes the credentials used to rotate are the same as the iam user for other GitHub action continuous integration and deployment operations.
-=======
-This action also  on having the ability to list, create, and delete iam access keys. 
+
+This action also depends on having the ability to list, create, and delete iam access keys.
 
 The IAM Statement permitting this permissions should look something like the following
 
@@ -62,7 +60,6 @@ The IAM Statement permitting this permissions should look something like the fol
 ```
 
 By default, this action assumes the credentials used to rotate are the same as the iam user for other GitHub action scontinuous integration and deployment operations.
->>>>>>> 1f39261... update docs
 
 The example below rotates credentials just before they are used
 
