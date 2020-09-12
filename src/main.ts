@@ -28,7 +28,7 @@ export async function rotate(
 
   logger.info("Provisoning new access key");
   const { AccessKeyId, SecretAccessKey } = await credentials.create();
-  console.log("Fetching repository public key");
+  logger.info("Fetching repository public key");
   const { key, key_id } = await secrets.publicKey();
   logger.info(`Upserting secret ${githubAccessKeyIdName}`);
   await secrets.upsert(
