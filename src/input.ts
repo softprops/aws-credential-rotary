@@ -13,17 +13,6 @@ export interface Input {
   iamUserName: string | undefined;
 }
 
-const requireInput = (
-  env: Record<string, string | undefined>,
-  name: string,
-  displayName: string
-): string => {
-  const value = env[name];
-  if (!value) {
-    throw Error(`required input ${displayName}`);
-  }
-  return value;
-};
 export const input = (env: Record<string, string | undefined>): Input => {
   const githubToken = env.GITHUB_TOKEN || "";
   const [owner, repo] = (env.GITHUB_REPOSITORY || "").split("/");
