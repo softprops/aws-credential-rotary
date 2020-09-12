@@ -73,7 +73,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 +     - name: Rotate credentials
-+       uses: softprops/aws-credential-rotary@main
++       uses: softprops/aws-credential-rotary@v1
 +       env:
 +         GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
 +         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -102,7 +102,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
      - name: Rotate credentials
-       uses: softprops/aws-credential-rotary@main
+       uses: softprops/aws-credential-rotary@v1
        env:
          GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -128,7 +128,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
      - name: Rotate credentials
-       uses: softprops/aws-credential-rotary@main
+       uses: softprops/aws-credential-rotary@v1
 +       with:
 +           iam-user-name: 'name-of-iam-user-associated-with-credentials'
        env:
@@ -157,7 +157,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Rotate credentials
-        uses: softprops/aws-credential-rotary@main
+        uses: softprops/aws-credential-rotary@v1
         with:
             iam-user-name: 'name-of-iam-user-associated-with-credentials'
 +           github-access-key-id-name: 'CUSTOM_ACCESS_KEY_ID_NAME'
@@ -191,7 +191,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Rotate service a credentials
-        uses: softprops/aws-credential-rotary@main
+        uses: softprops/aws-credential-rotary@v1
         with:
            github-access-key-id-name: 'SERVICE_A_AWS_ACCESS_KEY_ID'
            github-secret-access-key-name: 'SERVICE_A_AWS_SECRET_ACCESS_TOKEN'
@@ -200,7 +200,7 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.SERVICE_A_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_TOKEN: ${{ secrets.SERVICE_A_AWS_SECRET_ACCESS_TOKEN }}
       - name: Rotate service b credentials
-        uses: softprops/aws-credential-rotary@main
+        uses: softprops/aws-credential-rotary@v1
         with:
            github-access-key-id-name: 'SERVICE_B_AWS_ACCESS_KEY_ID'
            github-secret-access-key-name: 'SERVICE_B_AWS_SECRET_ACCESS_TOKEN'
