@@ -173,6 +173,43 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 ```
 
+### Rotating multiple keys
+
+Monorepos which deploy multiple aws services may use multiple sets of aws credentials to do so. You can simply add multiple aws credential rotary steps
+
+```diff
+name: Rotate Multiple AWS Credentials
+
+on:
+ schedule:
+   # At 00:00 on Sunday.
+   - cron:  '0 0 * * 0'
+
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Rotate service a credentials
+        uses: softprops/aws-credential-rotary@main
+        with:
+           github-access-key-id-name: 'SERVICE_A_AWS_ACCESS_KEY_ID'
+           github-secret-access-key-name: 'SERVICE_A_AWS_SECRET_ACCESS_TOKEN'
+        env:
+          GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.SERVICE_A_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_TOKEN: ${{ secrets.SERVICE_A_AWS_SECRET_ACCESS_TOKEN }}
+      - name: Rotate service b credentials
+        uses: softprops/aws-credential-rotary@main
+        with:
+           github-access-key-id-name: 'SERVICE_B_AWS_ACCESS_KEY_ID'
+           github-secret-access-key-name: 'SERVICE_B_AWS_SECRET_ACCESS_TOKEN'
+        env:
+          GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.SERVICE_B_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_TOKEN: ${{ secrets.SERVICE_B_AWS_SECRET_ACCESS_TOKEN }}
+```
+
 ## inputs
 
 | Name        | Type    | Description                                                     |
