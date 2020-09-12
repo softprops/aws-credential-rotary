@@ -210,6 +210,10 @@ jobs:
           AWS_SECRET_ACCESS_TOKEN: ${{ secrets.SERVICE_B_AWS_SECRET_ACCESS_TOKEN }}
 ```
 
+### Special note
+
+GitHub actions workflows can be triggered asynchonously. Without coordination you can run into a case where two workflows triggered independently try to create/delete credentials at the same time. When you trigger your rotation workflow on a schedule it's unlikely this will happen. If you trigger your workflow on a push or other means we recommend serializing your workflow runs with an action like [Turnstyle](https://github.com/softprops/turnstyle)
+
 ## inputs
 
 | Name        | Type    | Description                                                     |
