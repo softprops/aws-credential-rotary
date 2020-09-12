@@ -36,7 +36,33 @@ Create a personal access token with `repo` permissions on [github.com](https://d
 
 Store that access token in your [GitHub repository secrets](https://docs.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets), then provide that as `GITHUB_TOKEN` environment variable to the GitHub action step for aws-credential-rotary.
 
+<<<<<<< HEAD
 This action also depends on having the ability to list, create, and delete iam access keys. You will need to provide at a minimum an `iam-user-name` to for the action to fetch the members access keys. By default, this action assumes the credentials used to rotate are the same as the iam user for other GitHub action continuous integration and deployment operations.
+=======
+This action also  on having the ability to list, create, and delete iam access keys. 
+
+The IAM Statement permitting this permissions should look something like the following
+
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Action": [
+                "iam:ListAccessKeys",
+                "iam:CreateAccessKey",
+                "iam:DeleteAccessKey",
+                "sts:GetCallerIdentity"
+            ],
+            "Resource": "arn:aws:iam::*:user/*",
+            "Effect": "Allow"
+        }
+    ]
+}
+```
+
+By default, this action assumes the credentials used to rotate are the same as the iam user for other GitHub action scontinuous integration and deployment operations.
+>>>>>>> 1f39261... update docs
 
 The example below rotates credentials just before they are used
 
@@ -50,7 +76,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 +     - name: Rotate credentials
-+       uses: softprops/aws-credential-rotary@master
++       uses: softprops/aws-credential-rotary@main
 +       env:
 +         GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
 +         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -79,9 +105,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
      - name: Rotate credentials
-       uses: softprops/aws-credential-rotary@master
-       with:
-           iam-user-name: name-of-iam-user-associated-with-credentials'
+       uses: softprops/aws-credential-rotary@main
        env:
          GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -95,7 +119,7 @@ jobs:
 
 ### Specifying IAM username
 
-When the IAM associated with for the credentials to be rotated is not the same as the IAM user used to rotate credentials you can specify an `iam-user-name` for disambiguating the two.
+When the IAM user associated with for the credentials to be rotated is not the same as the IAM user used to rotate credentials, you can specify an `iam-user-name` for disambiguating the two.
 
 ```diff
 name: Main
@@ -107,7 +131,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
      - name: Rotate credentials
-       uses: softprops/aws-credential-rotary@master
+       uses: softprops/aws-credential-rotary@main
 +       with:
 +           iam-user-name: 'name-of-iam-user-associated-with-credentials'
        env:
@@ -123,7 +147,7 @@ jobs:
 
 ### Custom secret names
 
-By default, this action will assume the credentials to be rotated exist as secrets named `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_TOKEN`. You can override these 
+By default, this action will assume the credentials to be rotated exist as secrets named `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_TOKEN`. You can override these with the following inputs
 
 
 ```diff
@@ -136,7 +160,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Rotate credentials
-        uses: softprops/aws-credential-rotary@master
+        uses: softprops/aws-credential-rotary@main
         with:
             iam-user-name: 'name-of-iam-user-associated-with-credentials'
 +           github-access-key-id-name: 'CUSTOM_ACCESS_KEY_ID_NAME'
@@ -152,7 +176,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 ```
 
-#### inputs
+## inputs
 
 | Name        | Type    | Description                                                     |
 |-------------|---------|-----------------------------------------------------------------|
