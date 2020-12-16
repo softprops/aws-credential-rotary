@@ -17,6 +17,9 @@ inputs:
   github-secret-access-key-name:
     description: 'GitHub secret name used to store AWS access key secret. Defaults to AWS_SECRET_ACCESS_KEY'
     required: false
+  organization:
+    description: 'If specified, the secret of this organization will be rotated instead of the one from the current repository'
+    required: false
 branding:
   color: 'green'
   icon: 'rotate-cw'

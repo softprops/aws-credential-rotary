@@ -32,7 +32,7 @@ In short, it is much easier to rotate your credentials than to cope with the aft
 
 This action depends on the ability to update repository secrets. As such it requires an GitHub api token with `repo` permissions.
 
-Create a personal access token with `repo` permissions on [github.com](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token) or if you prefer the command line, [try octopat](https://github.com/softprops/octopat)
+Create a personal access token with `repo` permissions on [github.com](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token) or if you prefer the command line, [try octopat](https://github.com/softprops/octopat). If you intend to update organization wide secrets, the access token must have `admin:org` permissions.
 
 Store that access token in your [GitHub repository secrets](https://docs.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets), then provide that as `GITHUB_TOKEN` environment variable to the GitHub action step for aws-credential-rotary.
 
@@ -173,6 +173,35 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 ```
 
+### Rotating organization secrets
+
+If you specify the `organization` input parameter, the secrets from this organization will be updated instead of the secrets of the current repository.
+
+
+```diff
+name: Rotate organization secrets
+
+on: push
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Rotate credentials
+        uses: softprops/aws-credential-rotary@v1
+        with:
++           organization: 'name-of-the-github-organization'
+        env:
+          GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      - name: Print Create Date
+        run: aws iam list-access-keys --user name-of-iam-user-associated-with-credentials --query 'AccessKeyMetadata[0].CreateDate' --output text
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+```
+
 ### Rotating multiple keys
 
 Monorepos which deploy multiple aws services may use multiple sets of aws credentials to do so. You can simply add multiple aws credential rotary steps
@@ -221,6 +250,7 @@ GitHub actions workflows can be triggered asynchonously. Without coordination yo
 | `iam-user-name`   | string  | AWS IAM username associated with credentials to be rotated. Defaults to sts get-caller-identity infered user name                    |
 | `github-access-key-id-name`      | string  | GitHub secret name used to store AWS access key id. Defaults to AWS_ACCESS_KEY_ID                |
 | `github-secret-access-key-name`      | string  | GitHub secret name used to store AWS access key secret. Defaults to AWS_SECRET_ACCESS_KEY                |
+| `organization`   | string  | If specified, the secret of this organization will be rotated instead of the one from the current repository                    |
 
 
 
