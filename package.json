@@ -21,24 +21,24 @@
   "author": "softprops",
   "license": "MIT",
   "dependencies": {
-    "@actions/core": "^1.2.5",
+    "@actions/core": "^1.2.6",
     "@actions/github": "^4.0.0",
-    "@octokit/rest": "^18.0.5",
-    "aws-sdk": "^2.751.0",
+    "@octokit/rest": "^18.1.0",
+    "aws-sdk": "^2.841.0",
     "tweetsodium": "0.0.5"
   },
   "devDependencies": {
-    "@types/jest": "^26.0.13",
-    "@types/node": "^14.10.1",
+    "@types/jest": "^26.0.20",
+    "@types/node": "^14.14.25",
     "@zeit/ncc": "^0.22.3",
     "aws-sdk-mock": "^5.1.0",
-    "husky": "^4.3.0",
-    "jest": "^26.4.2",
-    "jest-circus": "^26.4.2",
-    "lint-staged": "^10.3.0",
-    "prettier": "2.1.1",
-    "ts-jest": "^26.3.0",
-    "typescript": "^4.0.2"
+    "husky": "^5.0.9",
+    "jest": "^26.6.3",
+    "jest-circus": "^26.6.3",
+    "lint-staged": "^10.5.4",
+    "prettier": "2.2.1",
+    "ts-jest": "^26.5.1",
+    "typescript": "^4.1.4"
   },
   "lint-staged": {
     "{__tests__,src}/**/*.ts": [
