@@ -70,7 +70,7 @@ on: push
 
 jobs:
   main:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
 +     - name: Rotate credentials
 +       uses: softprops/aws-credential-rotary@v1
@@ -99,7 +99,7 @@ name: Rotate AWS Credentials
 
 jobs:
   main:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
      - name: Rotate credentials
        uses: softprops/aws-credential-rotary@v1
@@ -125,7 +125,7 @@ on: push
 
 jobs:
   main:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
      - name: Rotate credentials
        uses: softprops/aws-credential-rotary@v1
@@ -154,7 +154,7 @@ on: push
 
 jobs:
   main:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - name: Rotate credentials
         uses: softprops/aws-credential-rotary@v1
@@ -188,7 +188,7 @@ on:
 
 jobs:
   main:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - name: Rotate service a credentials
         uses: softprops/aws-credential-rotary@v1
