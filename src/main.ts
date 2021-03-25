@@ -22,7 +22,14 @@ export async function rotate(
   } = input;
   const keys = await credentials.list();
   if (keys.length == 2) {
-    logger.setFailed(`AWS user ${iamUserName} already has 2 access keys`);
+    try {
+      logger.info(`AWS user ${iamUserName} already has 2 access keys attempting to delete key at index 0: ${keys[0]} before rotating.`);
+      logger.info(`Deleting previous access key at index 0: ${keys[0]}`);
+      await credentials.delete(keys[0]);
+      rotate(input, secrets, credentials, logger)
+    } catch (error) {
+      logger.setFailed(`AWS user ${iamUserName} already had 2 access keys and there was an error creating new ones`);
+    }
     return;
   }
 
