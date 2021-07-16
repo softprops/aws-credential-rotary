@@ -45,6 +45,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           # token requires repo scope which default actions tokens do not have
           GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
+          AWS_REGION: us-east-1
       - name: Print Create Date After
         run: aws iam list-access-keys --user doug-clone --query 'AccessKeyMetadata[0].CreateDate' --output text
         env:
