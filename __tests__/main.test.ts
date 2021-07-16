@@ -1,7 +1,4 @@
 import * as assert from "assert";
-import { Credentials } from "../src/credentials";
-import { Secrets } from "../src/secrets";
-import { Input } from "../src/input";
 import { rotate } from "../src/main";
 // https://github.com/dwyl/aws-sdk-mock#using-typescript
 
@@ -68,7 +65,7 @@ describe("main", () => {
       });
       assert.deepStrictEqual(infos, [
         "Provisoning new access key",
-        "Fetching repository public key",
+        "Fetching public key",
         "Upserting secret xxx",
         "Upserting secret yyy",
         "Deleting previous access key",

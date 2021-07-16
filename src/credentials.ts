@@ -1,4 +1,4 @@
-import AWS from "aws-sdk";
+import { IAM } from "@aws-sdk/client-iam";
 
 export interface AccessKey {
   AccessKeyId: string;
@@ -12,31 +12,37 @@ export interface Credentials {
 }
 
 export class AwsCredentials implements Credentials {
-  private readonly iam: AWS.IAM;
+  private readonly iam: IAM;
   private readonly userName: string;
 
-  constructor(iam: AWS.IAM, userName: string) {
+  constructor(iam: IAM, userName: string) {
     this.iam = iam;
     this.userName = userName;
   }
 
   list = async () =>
     (
-      await this.iam
-        .listAccessKeys({
-          UserName: this.userName,
-        })
-        .promise()
-    ).AccessKeyMetadata.map((meta) => meta.AccessKeyId || "");
+      await this.iam.listAccessKeys({
+        UserName: this.userName,
+      })
+    ).AccessKeyMetadata?.map((meta) => meta.AccessKeyId || "") || [];
 
-  create = async () =>
-    (
-      await this.iam
-        .createAccessKey({
-          UserName: this.userName,
-        })
-        .promise()
+  create = async () => {
+    const key = (
+      await this.iam.createAccessKey({
+        UserName: this.userName,
+      })
     ).AccessKey;
+    // dubiously the sdk can return a key which as undefined key id/access secret
+    if (key?.AccessKeyId !== undefined && key?.SecretAccessKey !== undefined) {
+      return {
+        AccessKeyId: key?.AccessKeyId || "",
+        SecretAccessKey: key?.SecretAccessKey || "",
+      };
+    }
+
+    throw new Error("failed to create new access key");
+  };
 
   delete = async (AccessKeyId: string) =>
     await this.iam
@@ -44,6 +50,5 @@ export class AwsCredentials implements Credentials {
         UserName: this.userName,
         AccessKeyId,
       })
-      .promise()
       .then((_) => {});
 }

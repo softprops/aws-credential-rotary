@@ -1,5 +1,6 @@
 import { setFailed, info } from "@actions/core";
-import AWS from "aws-sdk";
+import { IAM } from "@aws-sdk/client-iam";
+import { STS } from "@aws-sdk/client-sts";
 import { AwsCredentials, Credentials } from "./credentials";
 import {
   GitHubRepositorySecrets,
@@ -67,9 +68,16 @@ async function main() {
 
     const username =
       iamUserName ||
-      (await new AWS.STS().getCallerIdentity().promise()).Arn?.split("/")[1] ||
+      (
+        await new STS({
+          region: process.env.AWS_REGION || "us-east-1",
+        }).getCallerIdentity({})
+      ).Arn?.split("/")[1] ||
       "";
-    const credentials = new AwsCredentials(new AWS.IAM(), username);
+    const credentials = new AwsCredentials(
+      new IAM({ region: process.env.AWS_REGION || "us-east-1" }),
+      username
+    );
     await rotate(
       { iamUserName: username, ...actionInput },
       secrets,

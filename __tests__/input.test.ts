@@ -15,6 +15,7 @@ describe("input", () => {
         repo: "bar",
         githubAccessKeyIdName: "AWS_ACCESS_KEY_ID",
         githubSecretAccessKeyName: "AWS_SECRET_ACCESS_KEY",
+        organization: undefined,
         iamUserName: undefined,
       }
     );

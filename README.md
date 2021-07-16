@@ -26,7 +26,7 @@ AWS [documents some helpful best practices](https://docs.aws.amazon.com/general/
 
 One of those practices is ensuring you are periodically rotating your credentials. The longer lived your credentials are, the greater the opportunity of inviting unwanted and unintential breach of your aws managed systems and data is.
 
-In short, it is much easier to rotate your credentials than to cope with the aftermath of a data access breach. 
+In short, it is much easier to rotate your credentials than to cope with the aftermath of a data access breach.
 
 ## 🤸 usage
 
@@ -36,26 +36,25 @@ Create a personal access token with `repo` permissions on [github.com](https://d
 
 Store that access token in your [GitHub repository secrets](https://docs.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets), then provide that as `GITHUB_TOKEN` environment variable to the GitHub action step for aws-credential-rotary.
 
-
 This action also depends on having the ability to list, create, and delete iam access keys.
 
 The IAM Statement permitting this permissions should look something like the following
 
 ```json
 {
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Action": [
-                "iam:ListAccessKeys",
-                "iam:CreateAccessKey",
-                "iam:DeleteAccessKey",
-                "sts:GetCallerIdentity"
-            ],
-            "Resource": "arn:aws:iam::*:user/*",
-            "Effect": "Allow"
-        }
-    ]
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "iam:ListAccessKeys",
+        "iam:CreateAccessKey",
+        "iam:DeleteAccessKey",
+        "sts:GetCallerIdentity"
+      ],
+      "Resource": "arn:aws:iam::*:user/*",
+      "Effect": "Allow"
+    }
+  ]
 }
 ```
 
@@ -142,10 +141,36 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 ```
 
+### Specifying AWS_REGION
+
+This action uses the aws v3 sdk which [requires a region to be provided](https://docs.aws.amazon.com/sdk-for-javascript/v3/developer-guide/setting-region.html). If you do not provide one via an `AWS_REGION` env variable `us-east-1` is assumed
+
+```diff
+name: Main
+
+on: push
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+     - name: Rotate credentials
+       uses: softprops/aws-credential-rotary@v1
+       env:
+         GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
+         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
++        AWS_REGION: 'us-west-2'
+      - name: Print Create Date
+        run: aws iam list-access-keys --user name-of-iam-user-associated-with-credentials --query 'AccessKeyMetadata[0].CreateDate' --output text
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+```
+
 ### Custom secret names
 
 By default, this action will assume the credentials to be rotated exist as secrets named `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`. You can override these with the following inputs
-
 
 ```diff
 name: Main
@@ -176,7 +201,6 @@ jobs:
 ### Rotating organization secrets
 
 If you specify the `organization` input parameter, the secrets from this organization will be updated instead of the secrets of the current repository.
-
 
 ```diff
 name: Rotate organization secrets
@@ -245,13 +269,11 @@ GitHub actions workflows can be triggered asynchonously. Without coordination yo
 
 ## inputs
 
-| Name        | Type    | Description                                                     |
-|-------------|---------|-----------------------------------------------------------------|
-| `iam-user-name`   | string  | AWS IAM username associated with credentials to be rotated. Defaults to sts get-caller-identity infered user name                    |
-| `github-access-key-id-name`      | string  | GitHub secret name used to store AWS access key id. Defaults to AWS_ACCESS_KEY_ID                |
-| `github-secret-access-key-name`      | string  | GitHub secret name used to store AWS access key secret. Defaults to AWS_SECRET_ACCESS_KEY                |
-| `organization`   | string  | If specified, the secret of this organization will be rotated instead of the one from the current repository                    |
-
-
+| Name                            | Type   | Description                                                                                                       |
+| ------------------------------- | ------ | ----------------------------------------------------------------------------------------------------------------- |
+| `iam-user-name`                 | string | AWS IAM username associated with credentials to be rotated. Defaults to sts get-caller-identity infered user name |
+| `github-access-key-id-name`     | string | GitHub secret name used to store AWS access key id. Defaults to AWS_ACCESS_KEY_ID                                 |
+| `github-secret-access-key-name` | string | GitHub secret name used to store AWS access key secret. Defaults to AWS_SECRET_ACCESS_KEY                         |
+| `organization`                  | string | If specified, the secret of this organization will be rotated instead of the one from the current repository      |
 
 Doug Tangren (softprops) 2020.

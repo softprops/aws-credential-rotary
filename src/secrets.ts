@@ -71,9 +71,9 @@ export class GitHubOrganizationSecrets implements Secrets {
 
   async upsert(secret_name: string, encrypted_value: string, key_id: string) {
     const oldSecret = await this.getSecret(secret_name);
-    const repositoryIds = await this.getSelectedRepositoryIdsOfSecret(
+    const selected_repository_ids = await this.getSelectedRepositoryIdsOfSecret(
       secret_name
-    );
+    ).then((ids) => ids.map((id) => id.toString()));
 
     await this.octokit.request(
       "PUT /orgs/{org}/actions/secrets/{secret_name}",
@@ -83,7 +83,7 @@ export class GitHubOrganizationSecrets implements Secrets {
         encrypted_value,
         key_id,
         visibility: oldSecret.visibility,
-        selected_repository_ids: repositoryIds,
+        selected_repository_ids,
       }
     );
   }
@@ -108,7 +108,7 @@ export class GitHubOrganizationSecrets implements Secrets {
 
   async getSelectedRepositoryIdsOfSecret(
     secret_name: string
-  ): Promise<Array<string>> {
+  ): Promise<Array<number>> {
     const { data } = await this.octokit.request(
       "GET /orgs/{org}/actions/secrets/{secret_name}/repositories",
       {
