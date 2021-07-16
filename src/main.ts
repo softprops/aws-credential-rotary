@@ -90,6 +90,8 @@ async function main() {
   }
 }
 
-if (require.main === module) {
-  main();
-}
+console.log(`require main ${require.main}`);
+
+//if (require.main === module) {
+main();
+//}
