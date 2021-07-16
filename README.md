@@ -77,7 +77,7 @@ jobs:
 +       env:
 +         GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
 +         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-+         AWS_SECRET_ACCESS_TOKEN: ${{ secrets.AWS_SECRET_ACCESS_TOKEN }}
++         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       - name: Print Create Date
         run: aws iam list-access-keys --user name-of-iam-user-associated-with-credentials --query 'AccessKeyMetadata[0].CreateDate' --output text
         env:
@@ -106,7 +106,7 @@ jobs:
        env:
          GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-         AWS_SECRET_ACCESS_TOKEN: ${{ secrets.AWS_SECRET_ACCESS_TOKEN }}
+         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       - name: Print Create Date
         run: aws iam list-access-keys --user name-of-iam-user-associated-with-credentials --query 'AccessKeyMetadata[0].CreateDate' --output text
         env:
@@ -134,7 +134,7 @@ jobs:
        env:
          GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-         AWS_SECRET_ACCESS_TOKEN: ${{ secrets.AWS_SECRET_ACCESS_TOKEN }}
+         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       - name: Print Create Date
         run: aws iam list-access-keys --user name-of-iam-user-associated-with-credentials --query 'AccessKeyMetadata[0].CreateDate' --output text
         env:
@@ -144,7 +144,7 @@ jobs:
 
 ### Custom secret names
 
-By default, this action will assume the credentials to be rotated exist as secrets named `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_TOKEN`. You can override these with the following inputs
+By default, this action will assume the credentials to be rotated exist as secrets named `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`. You can override these with the following inputs
 
 
 ```diff
@@ -165,7 +165,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_TOKEN: ${{ secrets.AWS_SECRET_ACCESS_TOKEN }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       - name: Print Create Date
         run: aws iam list-access-keys --user name-of-iam-user-associated-with-credentials --query 'AccessKeyMetadata[0].CreateDate' --output text
         env:
@@ -194,20 +194,20 @@ jobs:
         uses: softprops/aws-credential-rotary@v1
         with:
            github-access-key-id-name: 'SERVICE_A_AWS_ACCESS_KEY_ID'
-           github-secret-access-key-name: 'SERVICE_A_AWS_SECRET_ACCESS_TOKEN'
+           github-secret-access-key-name: 'SERVICE_A_AWS_SECRET_ACCESS_KEY'
         env:
           GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
           AWS_ACCESS_KEY_ID: ${{ secrets.SERVICE_A_AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_TOKEN: ${{ secrets.SERVICE_A_AWS_SECRET_ACCESS_TOKEN }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.SERVICE_A_AWS_SECRET_ACCESS_KEY }}
       - name: Rotate service b credentials
         uses: softprops/aws-credential-rotary@v1
         with:
            github-access-key-id-name: 'SERVICE_B_AWS_ACCESS_KEY_ID'
-           github-secret-access-key-name: 'SERVICE_B_AWS_SECRET_ACCESS_TOKEN'
+           github-secret-access-key-name: 'SERVICE_B_AWS_SECRET_ACCESS_KEY'
         env:
           GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
           AWS_ACCESS_KEY_ID: ${{ secrets.SERVICE_B_AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_TOKEN: ${{ secrets.SERVICE_B_AWS_SECRET_ACCESS_TOKEN }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.SERVICE_B_AWS_SECRET_ACCESS_KEY }}
 ```
 
 ### Special note
