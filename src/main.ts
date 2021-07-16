@@ -61,7 +61,7 @@ async function main() {
   try {
     const actionInput = input(process.env);
     const { githubToken, organization, owner, repo, iamUserName } = actionInput;
-
+    console.log(`organization? ${organization === undefined}`);
     const secrets =
       organization === undefined
         ? new GitHubRepositorySecrets(githubToken, owner, repo)
