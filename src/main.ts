@@ -9,6 +9,7 @@ import {
   GitHubOrganizationSecrets,
 } from "./secrets";
 import { Input, input } from "./input";
+import esMain from "es-main";
 
 export interface Logger {
   setFailed: (msg: any) => void;
@@ -83,15 +84,13 @@ async function main() {
       { iamUserName: username, ...actionInput },
       secrets,
       credentials,
-      { setFailed, info: console.log }
+      { setFailed, info }
     );
   } catch (error) {
     setFailed(error.message);
   }
 }
 
-console.log(`require main ${require.main}`);
-
-//if (require.main === module) {
-main();
-//}
+if (esMain(import.meta)) {
+  main();
+}
