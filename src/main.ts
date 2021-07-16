@@ -63,7 +63,7 @@ async function main() {
     const { githubToken, organization, owner, repo, iamUserName } = actionInput;
 
     const secrets =
-      organization == null
+      organization === undefined
         ? new GitHubRepositorySecrets(githubToken, owner, repo)
         : new GitHubOrganizationSecrets(githubToken, organization);
 
