@@ -29,7 +29,7 @@ describe("main", () => {
         setFailed: (msg: any) => errs.push(msg),
         info: (msg: any) => infos.push(msg),
       });
-      assert.deepStrictEqual(infos, []);
+      assert.deepStrictEqual(infos, ["Checking current credentials"]);
       assert.deepStrictEqual(errs, ["AWS user emma already has 2 access keys"]);
     });
 
@@ -64,6 +64,7 @@ describe("main", () => {
         info: (msg: any) => infos.push(msg),
       });
       assert.deepStrictEqual(infos, [
+        "Checking current credentials",
         "Provisoning new access key",
         "Fetching public key",
         "Upserting secret xxx",

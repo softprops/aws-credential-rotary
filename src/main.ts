@@ -26,6 +26,7 @@ export async function rotate(
     githubAccessKeyIdName,
     githubSecretAccessKeyName,
   } = input;
+  logger.info("Checking current credentials");
   const keys = await credentials.list();
   if (keys.length == 2) {
     logger.setFailed(`AWS user ${iamUserName} already has 2 access keys`);
