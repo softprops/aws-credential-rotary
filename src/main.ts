@@ -83,7 +83,7 @@ async function main() {
       { iamUserName: username, ...actionInput },
       secrets,
       credentials,
-      { setFailed, info }
+      { setFailed, info: console.log }
     );
   } catch (error) {
     setFailed(error.message);
