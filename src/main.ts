@@ -9,7 +9,6 @@ import {
   GitHubOrganizationSecrets,
 } from "./secrets";
 import { Input, input } from "./input";
-import esMain from "es-main";
 
 export interface Logger {
   setFailed: (msg: any) => void;
