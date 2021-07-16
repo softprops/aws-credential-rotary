@@ -90,6 +90,6 @@ async function main() {
   }
 }
 
-if (!!process.env.SELF_TESTING) {
+if (process.env.SELF_TESTING === undefined) {
   main();
 }
