@@ -24,6 +24,8 @@ jobs:
         run: npm run build
       - name: Test
         run: npm run test
+        env:
+          SELF_TESTING: true
       - name: Format
         run: npm run fmtcheck
   integration:

@@ -91,6 +91,6 @@ async function main() {
   }
 }
 
-if (esMain(import.meta)) {
+if (process.env.SELF_TESTING!!) {
   main();
 }
