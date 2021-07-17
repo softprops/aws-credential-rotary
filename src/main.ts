@@ -64,10 +64,9 @@ async function main() {
     console.log(
       `organization '${organization}' owner '${owner}' repo '${repo}'`
     );
-    const secrets =
-      organization === undefined
-        ? new GitHubRepositorySecrets(githubToken, owner, repo)
-        : new GitHubOrganizationSecrets(githubToken, organization);
+    const secrets = organization
+      ? new GitHubOrganizationSecrets(githubToken, organization)
+      : new GitHubRepositorySecrets(githubToken, owner, repo);
 
     const username =
       iamUserName ||

@@ -41,16 +41,18 @@ export class GitHubRepositorySecrets implements Secrets {
   }
 
   async upsert(secret_name: string, encrypted_value: string, key_id: string) {
-    await this.octokit.request(
-      "PUT /repos/{owner}/{repo}/actions/secrets/{secret_name}",
-      {
+    await this.octokit
+      .request("PUT /repos/{owner}/{repo}/actions/secrets/{secret_name}", {
         owner: this.owner,
         repo: this.repo,
         secret_name,
         encrypted_value,
         key_id,
-      }
-    );
+      })
+      .catch((e) => {
+        console.log(e.headers);
+        throw e;
+      });
   }
 }
 
@@ -65,9 +67,14 @@ export class GitHubOrganizationSecrets implements Secrets {
 
   async publicKey() {
     return (
-      await this.octokit.request("GET /orgs/{org}/actions/secrets/public-key", {
-        org: this.organization,
-      })
+      await this.octokit
+        .request("GET /orgs/{org}/actions/secrets/public-key", {
+          org: this.organization,
+        })
+        .catch((e) => {
+          console.log(e.headers);
+          throw e;
+        })
     ).data;
   }
 
@@ -77,17 +84,19 @@ export class GitHubOrganizationSecrets implements Secrets {
       secret_name
     ).then((ids) => ids.map((id) => id.toString()));
 
-    await this.octokit.request(
-      "PUT /orgs/{org}/actions/secrets/{secret_name}",
-      {
+    await this.octokit
+      .request("PUT /orgs/{org}/actions/secrets/{secret_name}", {
         org: this.organization,
         secret_name,
         encrypted_value,
         key_id,
         visibility: oldSecret.visibility,
         selected_repository_ids,
-      }
-    );
+      })
+      .catch((e) => {
+        console.log(e.headers);
+        throw e;
+      });
   }
 
   async getSecret(secret_name: string) {
@@ -111,13 +120,15 @@ export class GitHubOrganizationSecrets implements Secrets {
   async getSelectedRepositoryIdsOfSecret(
     secret_name: string
   ): Promise<Array<number>> {
-    const { data } = await this.octokit.request(
-      "GET /orgs/{org}/actions/secrets/{secret_name}/repositories",
-      {
+    const { data } = await this.octokit
+      .request("GET /orgs/{org}/actions/secrets/{secret_name}/repositories", {
         org: this.organization,
         secret_name,
-      }
-    );
+      })
+      .catch((e) => {
+        console.log(e.headers);
+        throw e;
+      });
 
     return data.repositories.map((r) => r.id);
   }
