@@ -34,6 +34,9 @@ export class GitHubRepositorySecrets implements Secrets {
           repo: this.repo,
         })
         .catch((e) => {
+          console.log(
+            `failed to fetch public key for ${this.owner}/${this.repo}`
+          );
           console.log(e.headers);
           throw e;
         })
@@ -50,6 +53,9 @@ export class GitHubRepositorySecrets implements Secrets {
         key_id,
       })
       .catch((e) => {
+        console.log(
+          `failed to upsert secret ${secret_name} for ${this.owner}/${this.repo}`
+        );
         console.log(e.headers);
         throw e;
       });
@@ -72,6 +78,9 @@ export class GitHubOrganizationSecrets implements Secrets {
           org: this.organization,
         })
         .catch((e) => {
+          console.log(
+            `failed to fetch public key for organization ${this.organization}`
+          );
           console.log(e.headers);
           throw e;
         })
@@ -94,6 +103,9 @@ export class GitHubOrganizationSecrets implements Secrets {
         selected_repository_ids,
       })
       .catch((e) => {
+        console.log(
+          `failed to upsert secret ${secret_name} for ${this.organization}`
+        );
         console.log(e.headers);
         throw e;
       });
@@ -111,9 +123,10 @@ export class GitHubOrganizationSecrets implements Secrets {
         )
       ).data;
     } catch (e) {
-      throw new Error(
-        `Could not retrieve organization secret ${this.organization}/${secret_name}. Root cause: ${e.message}`
+      console.log(
+        `failed to get secret ${secret_name} for ${this.organization}`
       );
+      throw e;
     }
   }
 
@@ -126,6 +139,9 @@ export class GitHubOrganizationSecrets implements Secrets {
         secret_name,
       })
       .catch((e) => {
+        console.log(
+          `failed to get list of repositories using ${secret_name} for ${this.organization}`
+        );
         console.log(e.headers);
         throw e;
       });
