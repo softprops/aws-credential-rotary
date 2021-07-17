@@ -61,9 +61,6 @@ async function main() {
   try {
     const actionInput = input(process.env);
     const { githubToken, organization, owner, repo, iamUserName } = actionInput;
-    console.log(
-      `organization '${organization}' owner '${owner}' repo '${repo}'`
-    );
     const secrets = organization
       ? new GitHubOrganizationSecrets(githubToken, organization)
       : new GitHubRepositorySecrets(githubToken, owner, repo);
