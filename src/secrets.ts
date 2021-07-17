@@ -28,13 +28,15 @@ export class GitHubRepositorySecrets implements Secrets {
 
   async publicKey() {
     return (
-      await this.octokit.request(
-        "GET /repos/{owner}/{repo}/actions/secrets/public-key",
-        {
+      await this.octokit
+        .request("GET /repos/{owner}/{repo}/actions/secrets/public-key", {
           owner: this.owner,
           repo: this.repo,
-        }
-      )
+        })
+        .catch((e) => {
+          console.log(e.headers);
+          throw e;
+        })
     ).data;
   }
 
