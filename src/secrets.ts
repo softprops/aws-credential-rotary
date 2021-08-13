@@ -16,9 +16,9 @@ export const encrypt = (plaintext: string, publicKey: string): string =>
   ).toString("base64");
 
 export class GitHubRepositorySecrets implements Secrets {
-  private readonly octokit: Octokit;
-  private readonly owner: string;
-  private readonly repo: string;
+  protected readonly octokit: Octokit;
+  protected readonly owner: string;
+  protected readonly repo: string;
 
   constructor(githubToken: string, owner: string, repo: string) {
     this.octokit = new Octokit({ auth: githubToken });
@@ -52,6 +52,77 @@ export class GitHubRepositorySecrets implements Secrets {
         encrypted_value,
         key_id,
       })
+      .catch((e) => {
+        console.log(
+          `failed to upsert secret ${secret_name} for ${this.owner}/${this.repo}`
+        );
+        console.log(e.headers);
+        throw e;
+      });
+  }
+}
+
+export class GitHubRepositoryEnvironmentSecrets extends GitHubRepositorySecrets {
+  private readonly env: string;
+
+  constructor(githubToken: string, owner: string, repo: string, env: string) {
+    super(githubToken, owner, repo);
+    this.env = env;
+  }
+
+  async getRepoId() {
+    return (
+      await this.octokit
+        .request("GET /repos/{owner}/{repo}", {
+          owner: this.owner,
+          repo: this.repo,
+        })
+        .catch((e) => {
+          console.log(
+            `failed to fetch public key for ${this.owner}/${this.repo}`
+          );
+          console.log(e.headers);
+          throw e;
+        })
+    ).data.id;
+  }
+
+  async publicKey() {
+    const repository_id = await this.getRepoId();
+    return (
+      await this.octokit
+        .request(
+          "GET /repositories/{repository_id}/environments/{environment_name}/secrets/public-key",
+          {
+            repository_id,
+            environment_name: this.env,
+            owner: this.owner,
+            repo: this.repo,
+          }
+        )
+        .catch((e) => {
+          console.log(
+            `failed to fetch public key for ${this.owner}/${this.repo}`
+          );
+          console.log(e.headers);
+          throw e;
+        })
+    ).data;
+  }
+
+  async upsert(secret_name: string, encrypted_value: string, key_id: string) {
+    const repository_id = await this.getRepoId();
+    await this.octokit
+      .request(
+        "PUT /repositories/{repository_id}/environments/{environment_name}/secrets/{secret_name}",
+        {
+          repository_id,
+          environment_name: this.env,
+          secret_name,
+          encrypted_value,
+          key_id,
+        }
+      )
       .catch((e) => {
         console.log(
           `failed to upsert secret ${secret_name} for ${this.owner}/${this.repo}`

@@ -16,6 +16,7 @@ describe("input", () => {
         githubAccessKeyIdName: "AWS_ACCESS_KEY_ID",
         githubSecretAccessKeyName: "AWS_SECRET_ACCESS_KEY",
         organization: undefined,
+        environment: undefined,
         iamUserName: undefined,
       }
     );

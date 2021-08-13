@@ -7,6 +7,7 @@ import {
   Secrets,
   encrypt,
   GitHubOrganizationSecrets,
+  GitHubRepositoryEnvironmentSecrets,
 } from "./secrets";
 import { Input, input } from "./input";
 
@@ -57,14 +58,31 @@ export async function rotate(
   await credentials.delete(keys[0]);
 }
 
+export function getSecretHandler(actionInput: Input) {
+  const { githubToken, organization, owner, repo, environment } = actionInput;
+
+  let secrets;
+  if (organization) {
+    secrets = new GitHubOrganizationSecrets(githubToken, organization);
+  } else if (environment) {
+    secrets = new GitHubRepositoryEnvironmentSecrets(
+      githubToken,
+      owner,
+      repo,
+      environment
+    );
+  } else {
+    secrets = new GitHubRepositorySecrets(githubToken, owner, repo);
+  }
+  return secrets;
+}
+
 async function main() {
   try {
     const actionInput = input(process.env);
-    const { githubToken, organization, owner, repo, iamUserName } = actionInput;
-    const secrets = organization
-      ? new GitHubOrganizationSecrets(githubToken, organization)
-      : new GitHubRepositorySecrets(githubToken, owner, repo);
+    const secrets = getSecretHandler(actionInput);
 
+    const { iamUserName } = actionInput;
     const username =
       iamUserName ||
       (

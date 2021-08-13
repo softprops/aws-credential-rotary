@@ -1,25 +1,28 @@
 # https://help.github.com/en/articles/metadata-syntax-for-github-actions
-name: 'AWS Credential Rotary'
-description: 'Rotate AWS Credentials stored in GitHub secrets'
-author: 'softprops'
+name: "AWS Credential Rotary"
+description: "Rotate AWS Credentials stored in GitHub secrets"
+author: "softprops"
 env:
-  'GITHUB_TOKEN': 'GitHub API token'
+  "GITHUB_TOKEN": "GitHub API token"
 runs:
-  using: 'node12'
-  main: 'dist/index.js'
+  using: "node12"
+  main: "dist/index.js"
 inputs:
   iam-user-name:
-    description: 'AWS IAM username associated with credentials to be rotated'
+    description: "AWS IAM username associated with credentials to be rotated"
     required: false
   github-access-key-id-name:
-    description: 'GitHub secret name used to store AWS access key id. Defaults to AWS_ACCESS_KEY_ID'
+    description: "GitHub secret name used to store AWS access key id. Defaults to AWS_ACCESS_KEY_ID"
     required: false
   github-secret-access-key-name:
-    description: 'GitHub secret name used to store AWS access key secret. Defaults to AWS_SECRET_ACCESS_KEY'
+    description: "GitHub secret name used to store AWS access key secret. Defaults to AWS_SECRET_ACCESS_KEY"
     required: false
   organization:
-    description: 'If specified, the secret of this organization will be rotated instead of the one from the current repository'
+    description: "If specified, the secret of this organization will be rotated instead of the one from the current repository"
+    required: false
+  environment:
+    description: "If specified, the secret of this repo environment will be rotated"
     required: false
 branding:
-  color: 'green'
-  icon: 'rotate-cw'
+  color: "green"
+  icon: "rotate-cw"
