@@ -203,6 +203,26 @@ jobs:
           AWS_REGION: us-east-1
 ```
 
+### Rotating repository's environment secrets
+
+If you utilise the repository [environment](https://docs.github.com/en/actions/reference/environments) protection rules, you can specify the `environment` input parameter. Only the secrets from the repository's environment will be updated.
+
+```diff
+name: Rotate environment secrets
+
+on: push
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Rotate credentials
+        uses: softprops/aws-credential-rotary@v1
+        with:
++           environment: 'sandbox'
+        ...
+```
+
 ### Rotating organization secrets
 
 If you specify the `organization` input parameter, the secrets from this organization will be updated instead of the secrets of the current repository.
@@ -220,17 +240,11 @@ jobs:
         uses: softprops/aws-credential-rotary@v1
         with:
 +           organization: 'name-of-the-github-organization'
-        env:
-          GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      - name: Print Create Date
-        run: aws iam list-access-keys --user name-of-iam-user-associated-with-credentials --query 'AccessKeyMetadata[0].CreateDate' --output text
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: us-east-1
+        ...
 ```
+
+> :warning: Do **NOT** set both `organization` and `environment` parameters.  
+If you do, the script will prioritise the `organization` parameter and ignore the `environment` parameter.
 
 ### Rotating multiple keys
 

@@ -1,5 +1,10 @@
 import * as assert from "assert";
-import { rotate } from "../src/main";
+import { Input } from "../src/input";
+import { rotate, getSecretHandler } from "../src/main";
+import {
+  GitHubRepositoryEnvironmentSecrets,
+  GitHubOrganizationSecrets,
+} from "../src/secrets";
 // https://github.com/dwyl/aws-sdk-mock#using-typescript
 
 describe("main", () => {
@@ -72,6 +77,39 @@ describe("main", () => {
         "Deleting previous access key",
       ]);
       assert.deepStrictEqual(errs, []);
+    });
+  });
+
+  describe("secrets handler", () => {
+    it("validate selected handler when environment parameter is set", () => {
+      const input: Input = {
+        githubToken: "xxx",
+        owner: "xxx",
+        repo: "xxx",
+        githubAccessKeyIdName: "xxx",
+        githubSecretAccessKeyName: "xxx",
+        iamUserName: "emma",
+        environment: "sandbox",
+      };
+
+      const secretHandler = getSecretHandler(input);
+      expect(secretHandler).toBeInstanceOf(GitHubRepositoryEnvironmentSecrets);
+    });
+
+    it("validate selected handler when both environment and organization parameters are set", () => {
+      const input: Input = {
+        githubToken: "xxx",
+        owner: "xxx",
+        repo: "xxx",
+        githubAccessKeyIdName: "xxx",
+        githubSecretAccessKeyName: "xxx",
+        iamUserName: "emma",
+        environment: "sandbox",
+        organization: "organization",
+      };
+
+      const secretHandler = getSecretHandler(input);
+      expect(secretHandler).toBeInstanceOf(GitHubOrganizationSecrets);
     });
   });
 });

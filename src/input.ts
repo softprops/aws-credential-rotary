@@ -13,11 +13,14 @@ export interface Input {
   githubSecretAccessKeyName: string;
   /** AWS IAM user name */
   iamUserName: string | undefined;
+  /** Repo environment name */
+  environment?: string;
 }
 
 export const input = (env: Record<string, string | undefined>): Input => {
   const githubToken = env.GITHUB_TOKEN || "";
   const organization = env["INPUT_ORGANIZATION"];
+  const environment = env["INPUT_ENVIRONMENT"];
   const [owner, repo] = (env.GITHUB_REPOSITORY || "").split("/");
   const githubAccessKeyIdName =
     env["INPUT_GITHUB-ACCESS-KEY-ID-NAME"] || "AWS_ACCESS_KEY_ID";
@@ -34,5 +37,6 @@ export const input = (env: Record<string, string | undefined>): Input => {
     githubAccessKeyIdName,
     githubSecretAccessKeyName,
     iamUserName,
+    environment,
   };
 };
